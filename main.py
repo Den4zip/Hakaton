@@ -1,14 +1,18 @@
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+from analyzer import WebAnalyzer
+from Ping import host
+import threading
+if __name__ == "__main__":
+    host_name = input("Введите имя хоста ")
+    analyzer = WebAnalyzer()
+    lock = threading.Lock()
+    isConnected = analyzer.CheckInternetConnection()
+    speed = analyzer.CheckDownloadUsingSpeedtest()
+    thread1 = threading.Thread(target=isConnected)
+    thread2 = threading.Thread(target=speed)
+    if isConnected:
+        print("Connected to the Internet")
+    else:
+        print("No connection")
+    print(str(speed["download"]//(1024*1024))+" MB")
+    print(str(speed["upload"]//(1024*1024))+" MB")
+    host(host_name)
