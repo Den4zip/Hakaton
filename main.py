@@ -1,18 +1,23 @@
 from analyzer import WebAnalyzer
-from Ping import host
 import threading
+import datetime
 if __name__ == "__main__":
     host_name = input("Введите имя хоста ")
-    analyzer = WebAnalyzer()
+    start = datetime.datetime.now()
+    analyzer = WebAnalyzer(host_name)
     lock = threading.Lock()
     isConnected = analyzer.CheckInternetConnection()
     speed = analyzer.CheckDownloadUsingSpeedtest()
+    pingcheck = analyzer.host()
     thread1 = threading.Thread(target=isConnected)
     thread2 = threading.Thread(target=speed)
-    if isConnected:
-        print("Connected to the Internet")
-    else:
-        print("No connection")
-    print(str(speed["download"]//(1024*1024))+" MB")
-    print(str(speed["upload"]//(1024*1024))+" MB")
-    host(host_name)
+    thread3 = threading.Thread(target=pingcheck)
+    thread1.start()
+    thread2.start()
+    thread3.start()
+    thread1.join()
+    thread2.join()
+    thread3.join()
+    finish = datetime.datetime.now()
+    print(str(finish - start))
+
